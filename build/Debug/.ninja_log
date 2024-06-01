@@ -1,5 +1,5 @@
 # ninja log v6
-3	220	7389581689770752	CMakeFiles/STM32_Warehouse.dir/UserApp/Utils/retarget.c.obj	34579794254f21ce
+3	209	7389582033962131	CMakeFiles/STM32_Warehouse.dir/UserApp/Utils/retarget.c.obj	34579794254f21ce
 20	481	7389570872699998	CMakeFiles/STM32_Warehouse.dir/Core/Src/main.c.obj	fc1aad3f0dc99005
 22	247	7389581689923155	CMakeFiles/STM32_Warehouse.dir/Core/Src/usart.c.obj	cc9f4cf795683c01
 35	507	7389570872854750	CMakeFiles/STM32_Warehouse.dir/Core/Src/gpio.c.obj	4f70d0902aab654a
@@ -38,12 +38,6 @@
 806	985	7389570880569596	CMakeFiles/STM32_Warehouse.dir/Core/Src/syscalls.c.obj	a1315b5d51eae369
 427	997	7389570876769966	CMakeFiles/STM32_Warehouse.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj	242999ec42e5b28e
 201	1027	7389570874510436	CMakeFiles/STM32_Warehouse.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj	8386a2d81af20c4
-3	448	7389570872539835	CMakeFiles/STM32_Warehouse.dir/UserApp/main.cpp.obj	3d45f617da341a36
-247	474	7389581692177155	STM32_Warehouse.elf	881f81aa34d71fea
+3	218	7389614235860386	CMakeFiles/STM32_Warehouse.dir/UserApp/main.cpp.obj	3d45f617da341a36
+218	416	7389614238003338	STM32_Warehouse.elf	881f81aa34d71fea
 3	217	7389580513478551	CMakeFiles/STM32_Warehouse.dir/UserApp/Utils/retarget.cpp.obj	1fbc8f694f99c08d
-3	209	7389582033962131	CMakeFiles/STM32_Warehouse.dir/UserApp/Utils/retarget.c.obj	34579794254f21ce
-210	413	7389582036033767	STM32_Warehouse.elf	881f81aa34d71fea
-3	243	7389601719511176	CMakeFiles/STM32_Warehouse.dir/UserApp/main.cpp.obj	3d45f617da341a36
-243	452	7389601721904618	STM32_Warehouse.elf	881f81aa34d71fea
-3	223	7389601866751186	CMakeFiles/STM32_Warehouse.dir/UserApp/main.cpp.obj	3d45f617da341a36
-224	427	7389601868954941	STM32_Warehouse.elf	881f81aa34d71fea
