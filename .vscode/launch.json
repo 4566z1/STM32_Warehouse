@@ -1,0 +1,20 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "./build/Debug/STM32_Warehouse.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "E:/Software/Scoop/apps/openocd/0.12.0/share/openocd/scripts/interface/cmsis-dap.cfg",
+                "E:/Software/Scoop/apps/openocd/0.12.0/share/openocd/scripts/target/stm32f4x.cfg"
+            ]
+        }
+    ]
+}
