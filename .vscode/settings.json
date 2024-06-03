@@ -4,6 +4,13 @@
         "main.h": "c",
         "cstdlib": "cpp",
         "retarget.h": "c",
-        "stm32f4xx_hal.h": "c"
+        "stm32f4xx_hal.h": "c",
+        "compare": "cpp",
+        "bsp_usart.h": "c",
+        "stdio.h": "c",
+        "cstdio": "cpp",
+        "common_inc.h": "c",
+        "cstring": "cpp",
+        "typeinfo": "cpp"
     }
 }

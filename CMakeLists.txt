@@ -9,6 +9,7 @@ cmake_minimum_required(VERSION 3.22)
 
 # Setup compiler settings
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
@@ -48,13 +49,14 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 # Add sources to executable
-file(GLOB_RECURSE SRC_FILES    
+file(GLOB_RECURSE SRC_FILES
     "./Bsp/*.*"
     "./UserApp/*.*"
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    ./Core/Src/bsp_USART.c
     ${SRC_FILES}
 )
 

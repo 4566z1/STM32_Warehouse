@@ -3,7 +3,8 @@
 
 #include "stm32f4xx.h"
 
-class Screen{
+class Screen
+{
 public:
     explicit Screen(UART_HandleTypeDef* huart)
         : m_huart(huart)

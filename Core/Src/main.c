@@ -89,12 +89,15 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  MX_USART3_UART_Init();
-  MX_USART6_UART_Init();
+  // MX_USART1_UART_Init();
+  // MX_USART2_UART_Init();
+  // MX_USART3_UART_Init();
+  // MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  USART1_Init(115200);
+  USART2_Init(115200);
+  USART3_Init(115200);
+  USART6_Init(115200);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
