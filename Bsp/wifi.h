@@ -3,7 +3,8 @@
 
 #include "stm32f4xx.h"
 
-class Wifi{
+class Wifi
+{
     public:
         explicit Wifi() 
         {}

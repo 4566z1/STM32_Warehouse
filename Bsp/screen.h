@@ -6,12 +6,14 @@
 class Screen
 {
 public:
-    explicit Screen(UART_HandleTypeDef* huart)
-        : m_huart(huart)
-    {};
+    explicit Screen()
+    {}
 
+    void set_text(const char* buf);
+    void send_command(const char* buf);
+    bool get_command(char* buf, const int& size);
 private:
-    UART_HandleTypeDef* m_huart;
+    
 };
 
 #endif
