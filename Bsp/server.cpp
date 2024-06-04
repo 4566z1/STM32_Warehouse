@@ -1,4 +1,4 @@
-#include "wifi.h"
+#include "server.h"
 #include "usart.h"
 
 extern "C"{
@@ -8,11 +8,11 @@ extern "C"{
 
 #include <cstring>
 
-void Wifi::set_server(const char* host){
+void Server::set_server(const char* host){
     USART3_SendString("S%s,", host);
 }
 
-bool Wifi::product_get(char* buf, const int& size){
+bool Server::product_get(char* buf, const int& size){
     USART3_SendString("G,");
 
     vTaskDelay(1000);
@@ -29,10 +29,10 @@ bool Wifi::product_get(char* buf, const int& size){
     }
 }
 
-void Wifi::product_add(const char* name, const char* cate){
+void Server::product_add(const char* name, const char* cate){
     USART3_SendString("A%s,%s,", name, cate);
 }
 
-void Wifi::product_del(const char* name){
+void Server::product_del(const char* name){
     USART3_SendString("D%s,", name);
 }

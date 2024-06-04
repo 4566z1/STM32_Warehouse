@@ -3,11 +3,6 @@ extern "C"{
     #include "bsp_USART.h"
 }
 
-void Screen::set_text(const char* buf){
-    USART6_SendString("t0.txt=");
-    USART6_SendString(buf);
-}
-
 void Screen::send_command(const char* buf){
     USART6_SendString(buf);
 }

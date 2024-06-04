@@ -5,11 +5,11 @@ extern "C"{
 }
 #include "utils.h"
 #include "rfid.h"
-#include "wifi.h"
+#include "server.h"
 #include "screen.h"
 
 Rfid rfid;
-Wifi wifi;
+Server server;
 Screen screen;
 
 enum MODE{
@@ -34,9 +34,9 @@ void RFIDMain(void){
             sprintf(code, "%d", card_epc[4]);
 
             if(mode == MODE_ADD)
-                wifi.product_add(name, code);
+                server.product_add(name, code);
             else
-                wifi.product_del(name);
+                server.product_del(name);
 
             // Show
             LOG("%s read: ", prefix);
@@ -60,7 +60,7 @@ void SCREENMain(void){
 
     while(true){
         // Pull data from server
-        if(wifi.product_get(buf, buf_size)){
+        if(server.product_get(buf, buf_size)){
             LOG("%s product_get: \n", prefix);
             for(int i = 0; i < buf_size; ++i){
                 if(buf[i] == 0) break;
@@ -68,7 +68,8 @@ void SCREENMain(void){
             }
             LOG("%s", buf);
 
-            screen.set_text(buf);
+            screen.send_command("t0.txt=");
+            screen.send_command(buf);
         }
 
         //  Read data from screen

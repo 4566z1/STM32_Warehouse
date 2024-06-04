@@ -1,12 +1,12 @@
-#ifndef WIFI_H
-#define WIFI_H
+#ifndef SERVER_H
+#define SERVER_H
 
 #include "stm32f4xx.h"
 
-class Wifi
+class Server
 {
     public:
-        explicit Wifi() 
+        explicit Server() 
         {}
 
         void set_server(const char* host);

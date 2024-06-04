@@ -9,7 +9,6 @@ public:
     explicit Screen()
     {}
 
-    void set_text(const char* buf);
     void send_command(const char* buf);
     bool get_command(char* buf, const int& size);
 private:
