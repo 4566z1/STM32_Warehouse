@@ -7,11 +7,14 @@ extern "C"{
 #include "rfid.h"
 #include "wifi.h"
 
+
 Rfid rfid;
 Wifi wifi;
 
-void Main(void){
-    HAL_Delay(2000);
+// RFID program entry
+void RFIDMain(void){
+    const char* prefix = "[RFIDMAIN]";
+    vTaskDelay(2000);
 
     // Default mode is adding mode.
     int mode = 0;   
@@ -26,14 +29,34 @@ void Main(void){
             wifi.product_add(name, code);
 
             // Show
+            LOG("%s ", prefix);
             for(int i = 0; i < DATA_GROUP_LEN; ++i){
-                USART1_SendString("%x ", card_epc[i]);
+                LOG("%x ", card_epc[i]);
             }
-            USART1_SendString("\n");
+            LOG("\n");
         } else { 
-            USART1_SendString("The rfid-card is not found\n");
+            LOG("%s %s", prefix, "The rfid-card is not found\n");
         }
 
-        HAL_Delay(100);
+        vTaskDelay(1000);
+    }
+}
+
+// Screen program entry
+void SCREENMain(void){
+    const char* prefix = "[SCREENMAIN]";
+    const int buf_size = 50;
+    char buf[buf_size] = {0};
+
+    while(true){
+        if(wifi.product_get(buf, buf_size)){
+            LOG("%s\n", prefix);
+            for(int i = 0; i < buf_size; ++i){
+                if(buf[i] == 0) break;
+                if(buf[i] == '@'){ buf[i] = '\n'; }
+            }
+            LOG("%s", buf);
+        }
+        vTaskDelay(1000);
     }
 }

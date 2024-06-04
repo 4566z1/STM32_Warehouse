@@ -2,6 +2,7 @@
 #include "usart.h"
 
 extern "C"{
+    #include "cmsis_os.h"
     #include "bsp_USART.h"
 }
 
@@ -19,7 +20,6 @@ bool Rfid::read(char* data){
 
     // Read header
     USART2_SendData(reinterpret_cast<uint8_t*>(command), 9);
-    HAL_Delay(1000);
     uint8_t* rxdata = USART2_GetReceivedData();
     //uint16_t rxNum = USART2_GetReceivedNum();
     memcpy(&header, rxdata, sizeof(header));
