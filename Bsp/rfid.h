@@ -3,7 +3,7 @@
 
 #include "stm32f4xx.h"
 
-#define DATA_GROUP_LEN 19
+const int DATA_GROUP_LEN = 19;
 
 class Rfid
 {
@@ -11,10 +11,10 @@ public:
     explicit Rfid()
     {}
 
-    // 主动盘存
-    bool read(uint8_t* data, uint16_t size = DATA_GROUP_LEN + 1);
+    // 主动盘存，读DATA_GROUP_LEN长度
+    bool read(char* data);
 private:
-    // UART_HandleTypeDef* m_huart;
+
 };
 
 #endif

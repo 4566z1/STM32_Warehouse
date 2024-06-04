@@ -3,28 +3,27 @@
 extern "C"{
     #include "bsp_USART.h"
 }
+#include "utils.h"
 #include "rfid.h"
 #include "wifi.h"
 
 Rfid rfid;
 Wifi wifi;
 
-#include <cstdio>
-
 void Main(void){
     HAL_Delay(2000);
 
+    // Default mode is adding mode.
+    int mode = 0;   
     while(true){
-        uint8_t card_epc[DATA_GROUP_LEN + 1] = {0};
+        char card_epc[DATA_GROUP_LEN + 1] = {0};
         if(rfid.read(card_epc)){
-            // Add to the server
-            char name[2] = {0};
-            char cate[2] = {0};
+            // Add data to the server
+            char name[5] = {0}, code[5] = {0};
+            sprintf(name, "%x", sign(card_epc, DATA_GROUP_LEN + 1));
+            sprintf(code, "%d", card_epc[4]);
 
-            name[0] = card_epc[0];
-            cate[0] = card_epc[4];
-
-            wifi.product_add(name, cate);
+            wifi.product_add(name, code);
 
             // Show
             for(int i = 0; i < DATA_GROUP_LEN; ++i){

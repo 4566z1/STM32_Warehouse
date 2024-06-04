@@ -8,9 +8,9 @@ class Wifi{
         explicit Wifi() 
         {}
 
-        void set_server(char* host);
-        void product_add(char* name, char* cate);
-        void product_del(char* name);
+        void set_server(const char* host);
+        void product_add(const char* name, const char* cate);
+        void product_del(const char* name);
     private:
         
 };
