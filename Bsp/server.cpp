@@ -14,12 +14,12 @@ void Server::set_server(const char* host){
 
 bool Server::product_get(char* buf, const int& size){
     USART3_SendString("G,");
-
-    vTaskDelay(1000);
     
+    vTaskDelay(100);
+
     uint8_t* rxdata = USART3_GetReceivedData();
     uint16_t rxNum = USART3_GetReceivedNum();
-    if(rxdata == 0) {
+    if(rxdata[0] == '\0') {
         return false;
     }
     else {

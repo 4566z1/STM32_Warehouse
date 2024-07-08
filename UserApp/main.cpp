@@ -12,21 +12,21 @@ Rfid rfid;
 Server server;
 Screen screen;
 
-enum MODE{
+enum Mode{
     MODE_ADD = 0,
     MODE_DEL = 1,
 };
 
-// RFID program entry
-MODE mode = MODE_ADD;
+volatile Mode mode = MODE_DEL;
 
-void RFIDMain(void){
-    const char* prefix = "[RFIDMAIN]";
-    vTaskDelay(2000);
+// RFID program entry
+void rfid_main(void){
+    vTaskDelay(1000);
+    const char* prefix = "[rfid_main]";
+    char card_epc[DATA_GROUP_LEN + 1] = {0};
 
     // Default mode is adding mode
     while(true){
-        char card_epc[DATA_GROUP_LEN + 1] = {0};
         if(rfid.read(card_epc)){
             // Edit data in server
             char name[5] = {0}, code[5] = {0};
@@ -53,30 +53,30 @@ void RFIDMain(void){
 }
 
 // Screen program entry
-void SCREENMain(void){
-    const char* prefix = "[SCREENMAIN]";
-    const int buf_size = 80;
+void screen_main(void){
+    const char* prefix = "[screen_main]";
+    const int buf_size = 150; 
     char buf[buf_size] = {0};
+
+    // Init the screen
+    screen.send_command("\x00\xff\xff\xff");
 
     while(true){
         // Pull data from server
         if(server.product_get(buf, buf_size)){
             LOG("%s product_get: \n", prefix);
-            for(int i = 0; i < buf_size; ++i){
-                if(buf[i] == 0) break;
-                if(buf[i] == '@'){ buf[i] = '\n'; }
-            }
-            LOG("%s", buf);
+            LOG("%s\n", buf);
 
-            screen.send_command("t0.txt=");
+            screen.send_command("t0.txt=\"");
             screen.send_command(buf);
+            screen.send_command("\"\xff\xff\xff");
         }
 
         //  Read data from screen
-        screen.send_command("get r0.val");
+        screen.send_command("get bt0.val\xff\xff\xff");
         if(screen.get_command(buf, buf_size)){
             if(buf[0] == 0x71){
-                mode = static_cast<MODE>(buf[1]);
+                mode = static_cast<Mode>(buf[1]);
             }
         } 
 

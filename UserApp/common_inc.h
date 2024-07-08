@@ -8,8 +8,8 @@ extern "C" {
 #include "main.h"
 #include "cmsis_os.h"
 
-extern void RFIDMain(void);
-extern void SCREENMain(void);
+extern void rfid_main(void);
+extern void screen_main(void);
 
 #ifdef __cplusplus
 }
