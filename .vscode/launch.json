@@ -12,7 +12,7 @@
             "type": "cortex-debug",
             "servertype": "openocd",
             "configFiles": [
-                "E:/Software/Scoop/apps/openocd/0.12.0/share/openocd/scripts/interface/cmsis-dap.cfg",
+                "E:/Software/Scoop/apps/openocd/0.12.0/share/openocd/scripts/interface/stlink-v2.cfg",
                 "E:/Software/Scoop/apps/openocd/0.12.0/share/openocd/scripts/target/stm32f4x.cfg"
             ]
         }
