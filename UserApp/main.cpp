@@ -17,7 +17,6 @@ Screen screen;
 void rfid_main(void)
 {
     vTaskDelay(1000);
-    aht10.init();
 
     while (true) {
         ble.read();
@@ -43,6 +42,7 @@ void rfid_main(void)
 void screen_main(void)
 {
     vTaskDelay(1000);
+    aht10.init();
     screen.init();
 
     while (true) {

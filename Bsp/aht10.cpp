@@ -1,4 +1,5 @@
 #include "aht10.h"
+
 #include "stdio.h"
 #include "string.h"
 
@@ -16,7 +17,6 @@ void AHT10::init()
 
 void AHT10::read()
 {
-    float temperature = 0.0f, humidity = 0.0f;
     memset(m_tem_str, 0, 10);
     memset(m_humi_str, 0, 10);
 
@@ -30,11 +30,11 @@ void AHT10::read()
     if ((readBuffer[0] & 0x80) == 0) {  // 确实读取到了数据
         uint32_t data = 0;
         data = (((uint32_t)readBuffer[3] >> 4) + ((uint32_t)readBuffer[2] << 4) + ((uint32_t)readBuffer[1] << 12));
-        humidity = data * 100.0f / (1 << 20);  // 根据公式得到湿度
+        this->m_humi = data * 100.0f / (1 << 20);  // 根据公式得到湿度
         data = (((uint32_t)readBuffer[3] & 0x0F) << 16) + ((uint32_t)readBuffer[4] << 8) + ((uint32_t)readBuffer[5]);
-        temperature = data * 200.f / (1 << 20) - 50;  // 根据公式得到温度
+        this->m_tem = data * 200.f / (1 << 20) - 50;  // 根据公式得到温度
     }
-
-    sprintf(this->m_tem_str, "%d", (int)temperature);
-    sprintf(this->m_humi_str, "%d", (int)humidity);
+    
+    sprintf(this->m_tem_str, "%d", (int)this->m_tem);
+    sprintf(this->m_humi_str, "%d", (int)this->m_humi);
 }

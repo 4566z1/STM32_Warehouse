@@ -17,7 +17,7 @@ bool Server::product_get()
 
     USART3_SendString("G,");
 
-    vTaskDelay(100);
+    // vTaskDelay(100);    // Response the http server
 
     uint8_t* rxdata = USART3_GetReceivedData();
     uint16_t rxNum = USART3_GetReceivedNum();

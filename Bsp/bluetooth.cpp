@@ -6,7 +6,7 @@ extern "C" {
 
 bool BLE::decode()
 {
-    if (m_buf[0] != ':') return false;
+    if (this->m_buf[0] != ':') return false;
 
     int i = 0;
     char* temp = strtok(m_buf, ":");
