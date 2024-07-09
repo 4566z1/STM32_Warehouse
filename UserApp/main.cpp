@@ -1,12 +1,12 @@
+#include "aht10.h"
+#include "bluetooth.h"
 #include "common_inc.h"
+#include "screen.h"
+#include "server.h"
 
 extern "C" {
 #include "bsp_USART.h"
 }
-#include "aht10.h"
-#include "bluetooth.h"
-#include "screen.h"
-#include "server.h"
 
 AHT10 aht10(0x70);
 BLE ble;
@@ -20,13 +20,11 @@ void rfid_main(void)
     const char* prefix = "rfid_main";
 
     while (true) {
-        BLE_PACK ble_pack = {0};
+        BLE_PACK ble_pack = {0, 0, 0};
         char buf[20] = {0};
         ble.read(buf, 20);
 
-        if (buf[0] == ':') {
-            decode(buf, &ble_pack);
-
+        if (ble.decode(buf, &ble_pack)) {
             LOG("%s => name: %s code: %s mode: %s", prefix, ble_pack.name, ble_pack.code, ble_pack.mode);
 
             int mode = atoi(ble_pack.mode);
@@ -63,7 +61,7 @@ void screen_main(void)
             char temp_str[10] = {0}, humid_str[10] = {0};
             sprintf(temp_str, "%d", (int)temperature);
             sprintf(humid_str, "%d%%", (int)humidity);
-            
+
             LOG("%s temp_str: %s\n", prefix, temp_str);
             LOG("%s temp_str: %s\n", prefix, humid_str);
 

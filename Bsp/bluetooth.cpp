@@ -4,20 +4,22 @@ extern "C" {
 #include "bsp_USART.h"
 }
 
-void decode(char* buf, BLE_PACK* ble_pack)
+bool BLE::decode(char* buf, BLE_PACK* ble_pack)
 {
-    int i = 0;
-    char *temp = strtok(buf, ":");
+    if (buf[0] != ':') return false;
 
-    while(temp)
-    {
-        if(i == 0) strcpy(ble_pack->name, temp);
-        if(i == 1) strcpy(ble_pack->code, temp);
-        if(i == 2) strcpy(ble_pack->mode, temp);
+    int i = 0;
+    char* temp = strtok(buf, ":");
+
+    while (temp) {
+        if (i == 0) strcpy(ble_pack->name, temp);
+        if (i == 1) strcpy(ble_pack->code, temp);
+        if (i == 2) strcpy(ble_pack->mode, temp);
         temp = strtok(NULL, ":");
 
         ++i;
     }
+    return true;
 }
 
 void BLE::read(char* data, const int& len)
