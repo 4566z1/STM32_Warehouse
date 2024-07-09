@@ -5,14 +5,14 @@
 
 class Screen
 {
-public:
-    explicit Screen()
-    {}
+   public:
+    explicit Screen() {}
 
+    void init() { this->send_command("\x00\xff\xff\xff"); }
     void send_command(const char* buf);
     bool get_command(char* buf, const int& size);
-private:
-    
+
+   private:
 };
 
 #endif

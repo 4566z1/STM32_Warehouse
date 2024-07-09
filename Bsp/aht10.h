@@ -8,22 +8,21 @@
 class AHT10
 {
    public:
-    explicit AHT10(const int& address) : m_address(address)
-    {
-        uint8_t readBuffer;
-        HAL_I2C_Master_Receive(&hi2c1, this->m_address, &readBuffer, 1,
-                               HAL_MAX_DELAY);  // 调用的指针，从机地址，读取变量存储地址，读取多少位数据，超时时间
-        if ((readBuffer & 0x08) == 0x00) {                // 从机返回值不为1
-            uint8_t send_Buffer[3] = {0xE1, 0x08, 0x00};  // 初始化传感器参数
-            HAL_I2C_Master_Transmit(&hi2c1, this->m_address, send_Buffer, 3,
-                                    HAL_MAX_DELAY);  // 调用的指针，从机地址，发送变量存储地址，发送多少位数据，超时时间
-        }
-    }
-    
-    void read(float& temperature, float& humidity);
+    explicit AHT10(const int& address) : m_address(address) {}
+
+    const float& get_tem() { return m_tem; }
+    const float& get_humi() { return m_tem; }
+    const char* get_tem_str() { return m_tem_str; };
+    const char* get_humi_str() { return m_humi_str; }
+    void init();
+    void read();
 
    private:
     int m_address;
+    char m_tem_str[10] = {0};
+    char m_humi_str[10] = {0};
+    float m_tem = 0.0f;
+    float m_humi = 0.0f;
 };
 
 #endif
