@@ -72,7 +72,10 @@ void loop() {
     }
     if(flag == 'G'){
       Serial.readStringUntil(',');
-      product_get();
     }
   }
+
+  product_get();
+
+  delay(1);
 }

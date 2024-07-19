@@ -14,7 +14,7 @@ bool Screen::get_command(char* buf, const int& size){
         return false;
     }
     else {
-        memcpy(buf, rxdata, rxNum > size ? size : rxNum);
+        memcpy(buf, rxdata, rxNum < size ? rxNum : size);
         return true;
     }
 }

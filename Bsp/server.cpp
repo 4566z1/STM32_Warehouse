@@ -1,7 +1,5 @@
 #include "server.h"
 
-#include "usart.h"
-
 extern "C" {
 #include "bsp_USART.h"
 #include "cmsis_os.h"
@@ -13,11 +11,7 @@ void Server::set_server(const char* host) { USART3_SendString("S%s,", host); }
 
 bool Server::product_get()
 {
-    memset(m_buf, 0, 100);
-
-    USART3_SendString("G,");
-
-    // vTaskDelay(100);    // Response the http server
+    memset(m_buf, 0, 512);
 
     uint8_t* rxdata = USART3_GetReceivedData();
     uint16_t rxNum = USART3_GetReceivedNum();
@@ -25,7 +19,7 @@ bool Server::product_get()
         return false;
     } else {
         // Fillter the /r/n
-        memcpy(this->m_buf, rxdata + 2, rxNum < 100 ? rxNum : 100);
+        memcpy(this->m_buf, rxdata + 2, rxNum < 512 ? rxNum : 512);
     }
 
     // Double-buffer-swap

@@ -8,6 +8,15 @@ extern "C" {
 #include "bsp_USART.h"
 }
 
+/* 调试模式 */
+//#define MAIN_DEBUG
+
+#ifdef MAIN_DEBUG
+#define LOG USART1_SendString
+#else
+#define LOG  //
+#endif
+
 AHT10 aht10(0x70);
 BLE ble;
 Server server;
@@ -22,7 +31,7 @@ void rfid_main(void)
         ble.read();
 
         if (ble.decode()) {
-            LOG("rfid_main => name: %s code: %s mode: %s", ble.get()->name, ble.get()->code, ble.get()->mode);
+            LOG("rfid_main => name: %s code: %s mode: %s\r\n", ble.get()->name, ble.get()->code, ble.get()->mode);
 
             int mode = atoi(ble.get()->mode);
             if (mode == 0)
@@ -50,8 +59,8 @@ void screen_main(void)
         {
             aht10.read();
 
-            LOG("screen_main => temp_str: %s\n", aht10.get_tem());
-            LOG("screen_main => temp_str: %s\n", aht10.get_humi());
+            // LOG("screen_main => temp_str: %s\n", aht10.get_tem_str());
+            // LOG("screen_main => temp_str: %s\n", aht10.get_humi_str());
 
             screen.send_command("sensor.t2.txt=\"");
             screen.send_command(aht10.get_tem_str());
@@ -60,6 +69,7 @@ void screen_main(void)
             screen.send_command("sensor.t3.txt=\"");
             screen.send_command(aht10.get_humi_str());
             screen.send_command("\"\xff\xff\xff");
+            vTaskDelay(1);
         }
 
         // Warehouse data
@@ -69,31 +79,34 @@ void screen_main(void)
                 screen.send_command(server.get_product());
                 screen.send_command("\"\xff\xff\xff");
             }
+            vTaskDelay(1);
         }
 
         // Controller
         {
-            char buf_tem[20] = {0}, buf_light[20] = {0};
-
+            char buf[20] = {0};
             screen.send_command("get sensor.n0.val\xff\xff\xff");
-            screen.get_command(buf_tem, 20);
-            if (buf_tem[0] == 0x71) {
-                if ((int)aht10.get_tem() > buf_tem[1]) {
-                    // Open
-                }
-            }
-
             screen.send_command("get sensor.bt1.val\xff\xff\xff");
-            screen.get_command(buf_light, 20);
-            if (buf_light[0] == 0x71) {
-                if (buf_light[1] == 0x01) {
-                    // Open Light
+
+            if (screen.get_command(buf, 20)) {
+                if (buf[1] > 1) {
+                    if ((int)aht10.get_tem() > buf[1]) {
+                        LOG("screen_main => open temp: %d\n", buf[1]);
+                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
+                    } else {
+                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+                    }
                 } else {
-                    // Close Light
+                    if (buf[1] == 0x01) {
+                        LOG("screen_main => open light: %d\n", buf[1]);
+                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
+                    } else {
+                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+                    }
                 }
             }
+            vTaskDelay(1);
         }
-
         vTaskDelay(100);
     }
 }

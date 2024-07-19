@@ -16,8 +16,9 @@ class Server
     void product_del(const char* name);
 
    private:
-    char m_buf[100] = {0};
-    char m_swap_buf[100] = {0};
+    // 双缓冲
+    char m_buf[512] = {0};
+    char m_swap_buf[512] = {0};
 };
 
 #endif
