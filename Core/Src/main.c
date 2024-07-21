@@ -94,6 +94,7 @@ int main(void)
   USART1_Init(115200);
   USART2_Init(115200);
   USART3_Init(115200);
+  UART4_Init(115200);
   USART6_Init(115200);
   /* USER CODE END 2 */
 
