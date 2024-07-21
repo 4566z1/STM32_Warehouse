@@ -29,11 +29,19 @@ void* operator new[](size_t size)//重载全局operator new[]
 {
 	return pvPortMalloc(size);
 }
+void operator delete[](void* phead)//重载全局operator delete[]
+{
+	vPortFree(phead);
+}
 void operator delete(void* phead)//重载全局operator delete
 {
 	vPortFree(phead);
 }
-void operator delete[](void* phead)//重载全局operator delete[]
+void operator delete(void* phead, unsigned int)
+{
+	vPortFree(phead);
+}
+void operator delete[](void* phead, unsigned int)
 {
 	vPortFree(phead);
 }

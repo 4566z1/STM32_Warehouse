@@ -5,7 +5,16 @@ Server server;
 Screen screen;
 Sensor sensor;
 
-// RFID program entry
+/**
+ * @brief 心跳包 Tick（10s）
+ *
+ */
+void tick() { sensor.update(); }
+
+/**
+ * @brief RFID Main
+ * 
+ */
 void rfid_main(void)
 {
     vTaskDelay(1000);
@@ -14,10 +23,9 @@ void rfid_main(void)
         ble.read();
 
         if (ble.decode()) {
-            LOG("rfid_main => name: %s code: %s mode: %s\r\n", ble.get()->name, ble.get()->code, ble.get()->mode);
+            // LOG("rfid_main => name: %s code: %s mode: %s\r\n", ble.get()->name, ble.get()->code, ble.get()->mode);
 
             int mode = atoi(ble.get()->mode);
-
             !mode ? server.product_add(ble.get()->name, ble.get()->code) : server.product_del(ble.get()->name);
         }
 
@@ -25,15 +33,20 @@ void rfid_main(void)
     }
 }
 
-// Screen program entry
+/**
+ * @brief Screen Main
+ * 
+ */
 void screen_main(void)
 {
     vTaskDelay(1000);
     sensor.init();
     screen.init();
 
+    xTimerCreate("tick", (TickType_t)10000, pdTRUE, (void*)1, (TimerCallbackFunction_t)tick);
+
     while (true) {
-        // 同步信息
+        // 同步所有信息
         {
             // 传感器信息
             sensor.sync();
@@ -49,7 +62,7 @@ void screen_main(void)
             vTaskDelay(1);
         }
 
-        // 解析屏幕指令
+        // 解析屏幕指令 (由于串口是异步的，不能及时分清楚数据是哪个，只能粗略通过比较大小判断)
         {
             screen.get("sensor", "n0");
             screen.get("sensor", "bt1");
@@ -59,20 +72,15 @@ void screen_main(void)
             if (header == 0x71) {
                 if (value > 1) {
                     // value 为 当前温度阈值
-                    if ((int)sensor.m_aht10->get_tem() > value) {
-                        LOG("screen_main => open temp: %d\n", value);
-                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET);
-                    } else {
-                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-                    }
+                    LOG("screen_main => open temp: %d\n", value);
+                    (int)sensor.m_aht10->get_tem() > value ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
+                                                           : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+
                 } else {
                     // value 为 当前开灯状态
-                    if (value == 0x01) {
-                        LOG("screen_main => open light: %d\n", value);
-                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-                    } else {
-                        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
-                    }
+                    LOG("screen_main => open light: %d\n", value);
+                    value == 0x01 ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET)
+                                  : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
                 }
             }
             vTaskDelay(1);

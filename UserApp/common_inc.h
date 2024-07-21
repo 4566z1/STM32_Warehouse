@@ -10,6 +10,7 @@ extern "C" {
 
 extern void rfid_main(void);
 extern void screen_main(void);
+extern void tick(void);
 
 #ifdef __cplusplus
 }

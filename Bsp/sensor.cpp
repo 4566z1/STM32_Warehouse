@@ -17,17 +17,17 @@ void Sensor::init()
 
 void Sensor::sync()
 {
-    char buf[256] = {0};
+    memset(m_buf, 0, 256);
 
     /*    异步串口    */
     uint8_t* rxdata = UART4_GetReceivedData();
     uint16_t rxNum = UART4_GetReceivedNum();
-    memcpy(buf, rxdata, rxNum < 256 ? rxNum : 256);
+    memcpy(m_buf, rxdata, rxNum < 256 ? rxNum : 256);
     UART4_ClearReceived();
 
     /*    数据有效    */
-    if (buf[0] != '\0') {
-        Json::Value root(buf);
+    if (m_buf[0] != '\0') {
+        Json::Value root(m_buf);
 
         /*      更新货架灯      */
         if (root["command_name"] == "light") {

@@ -22,9 +22,9 @@ class Sensor
 
     /**
      * @brief 本地同步云端数据
-     * 
+     *
      */
-    void sync(); 
+    void sync();
 
     AHT10 *m_aht10;
     bool m_light = false;
@@ -32,6 +32,9 @@ class Sensor
     bool m_humi = false;
     bool m_human = false;
     bool m_stm32 = true;
+
+   private:
+    char m_buf[256] = {0};
 };
 
 #endif

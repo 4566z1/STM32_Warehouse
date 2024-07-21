@@ -49,7 +49,6 @@
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
-osMessageQId myQueue01Handle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -99,11 +98,6 @@ void MX_FREERTOS_Init(void) {
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
-  /* Create the queue(s) */
-  /* definition and creation of myQueue01 */
-  osMessageQDef(myQueue01, 16, uint16_t);
-  myQueue01Handle = osMessageCreate(osMessageQ(myQueue01), NULL);
-
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -114,7 +108,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of myTask02 */
-  osThreadDef(myTask02, StartTask02, osPriorityIdle, 0, 256);
+  osThreadDef(myTask02, StartTask02, osPriorityNormal, 0, 256);
   myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
