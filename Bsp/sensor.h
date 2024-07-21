@@ -9,6 +9,14 @@ class Sensor
     Sensor() {}
 
     /**
+     * @brief 是否有效
+     *
+     * @return true
+     * @return false
+     */
+    bool is_ok() { return m_aht10->is_init(); }
+
+    /**
      * @brief  初始化传感器
      *
      */
@@ -24,9 +32,10 @@ class Sensor
      * @brief 本地同步云端数据
      *
      */
-    void sync();
+    bool sync();
 
     AHT10 *m_aht10;
+    bool m_is_init = false;
     bool m_light = false;
     bool m_fan = false;
     bool m_humi = false;

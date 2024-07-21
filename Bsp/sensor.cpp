@@ -1,6 +1,6 @@
 #include "sensor.h"
 
-#include "json/json.h"
+#include "json/cJSON.h"
 
 extern "C" {
 #include "bsp_USART.h"
@@ -15,7 +15,7 @@ void Sensor::init()
     this->m_aht10 = &aht10;
 }
 
-void Sensor::sync()
+bool Sensor::sync()
 {
     memset(m_buf, 0, 256);
 
@@ -27,49 +27,40 @@ void Sensor::sync()
 
     /*    数据有效    */
     if (m_buf[0] != '\0') {
-        Json::Value root(m_buf);
-
-        /*      更新货架灯      */
-        if (root["command_name"] == "light") {
-            Json::Value light_state = root["paras"]["light_state"];
-            if (!light_state.empty()) {
-                m_light = light_state.asBool();
+        cJSON* root = cJSON_Parse(m_buf);
+        if (root != NULL) {
+            cJSON* item;
+            item = cJSON_GetObjectItem(root, "temp");
+            if (item) {
+                m_aht10->get_temres() = item->valueint;
+            }
+            item = cJSON_GetObjectItem(root, "humi");
+            if (item) {
+                 m_aht10->get_humires() = item->valueint;
+            }
+            item = cJSON_GetObjectItem(root, "light");
+            if (item) {
+                m_light = item->valueint;
             }
         }
+        return true;
     }
+    return false;
 }
 
 void Sensor::update()
 {
     /*        更新温湿度和系统工作状态        */
     UART4_SendString(
-        "{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"AHT10_T\":%2.2lf} }, "
-        "{\"service_id\": \"huojia_rfid\", \"properties\":{\"AHT10_H\":%2.2lf} }, {\"service_id\": "
-        "\"huojia_rfid\", \"properties\":{\"STM32\":%s} } ] }",
-        m_aht10->get_tem(), m_aht10->get_humi(), m_stm32 ? "true" : "false");
-
-    /*        更新货架灯        */
-    UART4_SendString("{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"Shelf_light\":%s} } ] }",
-                     m_light ? "true" : "false");
-
-    /*        更新人体红外传感器        */
-    UART4_SendString("{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"Human_reaction\":%s} } ] }",
-                     m_human ? "true" : "false");
-
-    /*        更新加湿器工作状态        */
-    UART4_SendString("{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"Humidifier\":%s} } ] }",
-                     m_humi ? "true" : "false");
-
-    /*        温湿度阈值信息更新        */
-    UART4_SendString(
-        "{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"Temp_Threshold\":%d} },{\"service_id\": "
-        "\"huojia_rfid\", \"properties\":{\"Humi_Threshold\":%d} } ] }",
-        m_aht10->get_temres(), m_aht10->get_humires());
-
-    /*        温湿度阈值报警        */
-    UART4_SendString(
-        "{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"Warning_Temp\":%s} },{\"service_id\": "
-        "\"huojia_rfid\", \"properties\":{\"Warning_Humi\":%s} } ] }",
-        m_aht10->get_tem() > m_aht10->get_temres() ? "\"Attention\"" : "\"Normal\"",
-        m_aht10->get_humi() > m_aht10->get_humires() ? "\"Attention\"" : "\"Normal\"");
+        "{\"services\": [ {\"service_id\": \"huojia_rfid\", \"properties\":{\"AHT10_T\":%d} }, {\"service_id\": "
+        "\"huojia_rfid\", \"properties\":{\"AHT10_H\":%d} }, {\"service_id\": \"huojia_rfid\", "
+        "\"properties\":{\"STM32\":%s} }, {\"service_id\": \"huojia_rfid\", \"properties\":{\"Human_reaction\":%s} "
+        "}, "
+        "{\"service_id\": \"huojia_rfid\", \"properties\":{\"Shelf_light\":%s} }, {\"service_id\": "
+        "\"huojia_rfid\", "
+        "\"properties\":{\"Shelf_fan\":%s} }, {\"service_id\": \"huojia_rfid\", \"properties\":{\"Humidifier\":%s} "
+        "} ] "
+        "}",
+        (int)m_aht10->get_tem(), (int)m_aht10->get_humi(), m_stm32 ? "true" : "false", m_human ? "true" : "false",
+        m_light ? "true" : "false", m_fan ? "true" : "false", m_humi ? "true" : "false");
 }

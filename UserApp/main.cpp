@@ -9,11 +9,21 @@ Sensor sensor;
  * @brief 心跳包 Tick（10s）
  *
  */
-void tick() { sensor.update(); }
+void tick()
+{
+    vTaskDelay(1000);
+
+    while (true) {
+        if (sensor.is_ok()) {
+            sensor.update();
+        }
+        vTaskDelay(10000);
+    }
+}
 
 /**
  * @brief RFID Main
- * 
+ *
  */
 void rfid_main(void)
 {
@@ -35,7 +45,7 @@ void rfid_main(void)
 
 /**
  * @brief Screen Main
- * 
+ *
  */
 void screen_main(void)
 {
@@ -43,26 +53,28 @@ void screen_main(void)
     sensor.init();
     screen.init();
 
-    xTimerCreate("tick", (TickType_t)10000, pdTRUE, (void*)1, (TimerCallbackFunction_t)tick);
-
     while (true) {
-        // 同步所有信息
+        // 同步信息
         {
-            // 传感器信息
-            sensor.sync();
+            // 本地同步
             sensor.m_aht10->read();
-            screen.set("sensor", "t2", sensor.m_aht10->get_tem());
-            screen.set("sensor", "t3", sensor.m_aht10->get_humi());
-            screen.set("sensor", "n0", sensor.m_aht10->get_temres());
-            screen.set("sensor", "bt1", sensor.m_light);
+            screen.set("sensor", "t2", sensor.m_aht10->get_tem_str());
+            screen.set("sensor", "t3", sensor.m_aht10->get_humi_str());
 
-            // 仓储信息
-            if (server.product_get()) screen.set("ware", "t0", server.get_product());
+            // 云端同步
+            if (sensor.sync()) {
+                screen.set("sensor", "bt1", sensor.m_light);
+                screen.set("sensor", "n0", sensor.m_aht10->get_temres());
+                screen.set("sensor", "n1", sensor.m_aht10->get_humires());
+            }
+            if (server.product_get()) {
+                screen.set("ware", "t0", server.get_product());
+            }
 
             vTaskDelay(1);
         }
 
-        // 解析屏幕指令 (由于串口是异步的，不能及时分清楚数据是哪个，只能粗略通过比较大小判断)
+        // 获取屏幕信息 (由于串口是异步的，不能及时分清楚数据是哪个，只能粗略通过比较大小判断)
         {
             screen.get("sensor", "n0");
             screen.get("sensor", "bt1");
@@ -71,19 +83,30 @@ void screen_main(void)
             char value = screen.get_data()[1];
             if (header == 0x71) {
                 if (value > 1) {
-                    // value 为 当前温度阈值
-                    LOG("screen_main => open temp: %d\n", value);
-                    (int)sensor.m_aht10->get_tem() > value ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
-                                                           : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
-
+                    sensor.m_aht10->get_temres() = value;
                 } else {
-                    // value 为 当前开灯状态
-                    LOG("screen_main => open light: %d\n", value);
-                    value == 0x01 ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET)
-                                  : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+                    sensor.m_light = value;
                 }
             }
+            
             vTaskDelay(1);
+        }
+
+        // 控制器
+        {
+            /*    温控    */
+            (int)sensor.m_aht10->get_tem() > sensor.m_aht10->get_humires()
+                ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_SET)
+                : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+
+            /*    灯光     */
+            sensor.m_light ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET)
+                           : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_RESET);
+
+            /*  人体传感器  */
+            sensor.m_human = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
+
+            /*    加湿器    */
         }
         vTaskDelay(100);
     }

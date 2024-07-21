@@ -738,7 +738,7 @@ void UART4_Init(uint32_t baudrate)
 {
     // 使能相关时钟
     RCC->APB1ENR |= RCC_APB1ENR_UART4EN;                   // 使能外设：UART4
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;                   // 使能GPIO：GPIOC
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;                   // 使能GPIO：GPIOA
 
     // 关闭串口
     UART4 -> CR1  =   0;                                   // 关闭串口，配置清零
@@ -764,12 +764,12 @@ void UART4_Init(uint32_t baudrate)
 
     // GPIO引脚工作模式配置
     GPIO_InitTypeDef    GPIO_InitStruct = {0};              // 声明初始化要用到的结构体
-    GPIO_InitStruct.Pin   = GPIO_PIN_10 | GPIO_PIN_11;      // 引脚 TX-PC10、RX-PC11
+    GPIO_InitStruct.Pin   = GPIO_PIN_0 | GPIO_PIN_1;
     GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;                // 工作模式
     GPIO_InitStruct.Pull  = GPIO_PULLUP;                    // 上下拉
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;      // 引脚速率
     GPIO_InitStruct.Alternate = GPIO_AF8_UART4;             // 引脚复用功能
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);                 // 初始化引脚工作模式
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);                 // 初始化引脚工作模式
 
     // 中断优选级配置
 #if 1                                                       // 使用HAL库进行配置

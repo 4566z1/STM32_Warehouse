@@ -25,7 +25,7 @@ set(CMAKE_PROJECT_NAME STM32_Warehouse)
 # Include toolchain file
 include("cmake/gcc-arm-none-eabi.cmake")
 
-set(COMMON_FLAGS "-specs=nosys.specs -specs=nano.specs -u _printf_float -u _scanf_float")
+set(COMMON_FLAGS "-specs=nosys.specs -specs=nano.specs -Wl,-u_printf_float -u _scanf_float")
 
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)

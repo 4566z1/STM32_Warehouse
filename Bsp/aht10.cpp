@@ -17,6 +17,9 @@ void AHT10::init()
 
 void AHT10::read()
 {
+    memset(m_tem_str, 0, 10);
+    memset(m_humi_str, 0, 10);
+    
     uint8_t sendBuffer[3] = {0xAC, 0x33, 0x00};  // 传感器测量参数
     uint8_t readBuffer[6];
     HAL_I2C_Master_Transmit(&hi2c1, this->m_address, sendBuffer, 3,
@@ -31,4 +34,8 @@ void AHT10::read()
         data = (((uint32_t)readBuffer[3] & 0x0F) << 16) + ((uint32_t)readBuffer[4] << 8) + ((uint32_t)readBuffer[5]);
         this->m_tem = data * 200.f / (1 << 20) - 50;  // 根据公式得到温度
     }
+
+    m_is_init = true;
+    sprintf(this->m_tem_str, "%d", (int)this->m_tem);
+    sprintf(this->m_humi_str, "%d", (int)this->m_humi);
 }

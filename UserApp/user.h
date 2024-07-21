@@ -12,7 +12,7 @@ extern "C" {
 }
 
 /* 调试模式 */
-//#define MAIN_DEBUG
+#define MAIN_DEBUG
 
 #ifdef MAIN_DEBUG
 #define LOG USART1_SendString

@@ -53,6 +53,7 @@
         "streambuf": "cpp",
         "task.h": "c",
         "freertos.h": "c",
-        "cmsis_os.h": "c"
+        "cmsis_os.h": "c",
+        "istream": "cpp"
     }
 }

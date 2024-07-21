@@ -49,6 +49,7 @@
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
+osThreadId myTask03Handle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -57,6 +58,7 @@ osThreadId myTask02Handle;
 
 void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
+void StartTask03(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -111,6 +113,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(myTask02, StartTask02, osPriorityNormal, 0, 256);
   myTask02Handle = osThreadCreate(osThread(myTask02), NULL);
 
+  /* definition and creation of myTask03 */
+  osThreadDef(myTask03, StartTask03, osPriorityBelowNormal, 0, 128);
+  myTask03Handle = osThreadCreate(osThread(myTask03), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -144,6 +150,21 @@ void StartTask02(void const * argument)
   /* Infinite loop */
   screen_main();
   /* USER CODE END StartTask02 */
+}
+
+/* USER CODE BEGIN Header_StartTask03 */
+/**
+* @brief Function implementing the myTask03 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTask03 */
+void StartTask03(void const * argument)
+{
+  /* USER CODE BEGIN StartTask03 */
+  /* Infinite loop */
+  tick();
+  /* USER CODE END StartTask03 */
 }
 
 /* Private application code --------------------------------------------------*/
