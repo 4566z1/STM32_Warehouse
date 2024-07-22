@@ -10,8 +10,8 @@ class Screen
 
     void init();
 
-    const char* get_data();
-    void get(const char* page, const char* var_name);
+    bool has_data();
+    const char* get_data() { return m_buf; }
     void set(const char* page, const char* var_name, const int& value);
     void set(const char* page, const char* var_name, const char* value);
 

@@ -35,7 +35,7 @@ void AHT10::read()
         this->m_tem = data * 200.f / (1 << 20) - 50;  // 根据公式得到温度
     }
 
-    if(m_is_init) m_is_init = true;
+    if(!m_is_init) m_is_init = true;
     sprintf(this->m_tem_str, "%d", (int)this->m_tem);
     sprintf(this->m_humi_str, "%d", (int)this->m_humi);
 }

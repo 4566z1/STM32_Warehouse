@@ -19,18 +19,16 @@ void Screen::set(const char* page, const char* var_name, const char* value)
     USART6_SendString("\"\xff\xff\xff");
 }
 
-void Screen::get(const char* page, const char* var_name)
-{
-    USART6_SendString("get %s.%s.val\xff\xff\xff", page, var_name);
-}
-
-const char* Screen::get_data()
+bool Screen::has_data()
 {
     uint8_t* rxdata = USART6_GetReceivedData();
     uint16_t rxNum = USART6_GetReceivedNum();
-    if (rxdata[0] != '\0') {
+
+    if (rxNum) {
         memcpy(m_buf, rxdata, rxNum < 20 ? rxNum : 20);
+        USART6_ClearReceived();
+        return true;
     }
-    USART6_ClearReceived();
-    return m_buf;
+
+    return false;
 }

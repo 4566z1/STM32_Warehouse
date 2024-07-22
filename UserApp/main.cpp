@@ -72,15 +72,12 @@ void screen_main(void)
 
         // 解析屏幕信息
         {
-            screen_s data = screen.get_data();
-            if (data.header == 0x06) {
-                sensor.m_aht10->get_temres() = data.value;
-            } else if (data.header == 0x0B) {
-                sensor.m_aht10->get_humires() = data.value;
-            } else if (data.header == 0x0A) {
-                sensor.m_light = data.value;
+            if (screen.has_data()) {
+                const char* data = screen.get_data();
+                sensor.m_aht10->get_temres() = data[0];
+                sensor.m_aht10->get_humires() = data[1];
+                sensor.m_light = data[2];
             }
-
             vTaskDelay(1);
         }
 
@@ -99,6 +96,7 @@ void screen_main(void)
             sensor.m_human = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8);
 
             /*    加湿器    */
+            
         }
         vTaskDelay(50);
     }
