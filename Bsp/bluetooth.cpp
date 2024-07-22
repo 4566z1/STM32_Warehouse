@@ -25,9 +25,10 @@ bool BLE::decode(char* data)
 bool BLE::read()
 {
     uint8_t* rxdata = USART2_GetReceivedData();
+    uint16_t rxNum = USART2_GetReceivedNum();
 
     /*    数据有效    */
-    if (rxdata[0] != '\0') {
+    if (rxNum) {
         m_ble_pack = {{0}, {0}, {0}};
         bool ret = decode((char*)rxdata);
         USART2_ClearReceived();

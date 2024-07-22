@@ -921,7 +921,6 @@ uint8_t *UART4_GetReceivedData(void)
 void UART4_ClearReceived(void)
 {
     xUART4.ReceivedNum = 0 ;
-    memset(xUART4.ReceivedData, 0, UART4_RX_BUF_SIZE);
 }
 #endif // END UART4
 

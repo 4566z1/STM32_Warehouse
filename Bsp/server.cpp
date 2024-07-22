@@ -12,9 +12,10 @@ void Server::set_server(const char* host) { USART3_SendString("S%s,", host); }
 bool Server::has_data()
 {
     uint8_t* rxdata = USART3_GetReceivedData();
+    uint16_t rxNum = USART3_GetReceivedNum();
 
     // Double-buffer-swap
-    if (rxdata[0] != '\0') {
+    if (rxNum) {
         // Fillter the \r \n
         char* p = (char*)rxdata;
         while (*p == '\r' || *p == '\n') ++p;

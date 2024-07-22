@@ -20,9 +20,10 @@ bool Sensor::sync()
 {
     /*    异步串口    */
     uint8_t* rxdata = UART4_GetReceivedData();
+    uint16_t rxNum = UART4_GetReceivedNum();
 
     /*    数据有效    */
-    if (rxdata[0] != '\0') {
+    if (rxNum) {
         cJSON* root = cJSON_Parse((const char*)rxdata);
         if (root != NULL) {
             cJSON* item;
