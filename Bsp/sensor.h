@@ -43,7 +43,7 @@ class Sensor
     bool m_stm32 = true;
 
    private:
-    char m_buf[256] = {0};
+    char m_buf[1024] = {0};
 };
 
 #endif

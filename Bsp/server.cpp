@@ -9,26 +9,25 @@ extern "C" {
 
 void Server::set_server(const char* host) { USART3_SendString("S%s,", host); }
 
-bool Server::product_get()
+bool Server::has_data()
 {
-    memset(m_buf, 0, 512);
-
     uint8_t* rxdata = USART3_GetReceivedData();
-    uint16_t rxNum = USART3_GetReceivedNum();
-    if (rxdata[0] == '\0') {
-        return false;
-    } else {
-        // Fillter the /r/n
-        memcpy(this->m_buf, rxdata + 2, rxNum < 512 ? rxNum : 512);
-    }
 
     // Double-buffer-swap
-    if (strcmp(this->m_swap_buf, this->m_buf)) {
-        strcpy(this->m_swap_buf, this->m_buf);
-        return true;
-    } else {
-        return false;
+    if (rxdata[0] != '\0') {
+        // Fillter the \r \n
+        char* p = (char*)rxdata;
+        while (*p == '\r' || *p == '\n') ++p;
+
+        if (strcmp(this->m_swap_buf, p)) {
+            strcpy(this->m_swap_buf, p);
+            USART3_ClearReceived();
+            return true;
+        }
     }
+
+    USART3_ClearReceived();
+    return false;
 }
 
 void Server::product_add(const char* name, const char* cate) { USART3_SendString("A%s,%s,", name, cate); }

@@ -15,7 +15,7 @@ void tick()
 
     while (true) {
         if (sensor.is_ok()) {
-            sensor.update();
+            // sensor.update();
         }
         vTaskDelay(10000);
     }
@@ -30,9 +30,7 @@ void rfid_main(void)
     vTaskDelay(1000);
 
     while (true) {
-        ble.read();
-
-        if (ble.decode()) {
+        if (ble.read()) {
             // LOG("rfid_main => name: %s code: %s mode: %s\r\n", ble.get()->name, ble.get()->code, ble.get()->mode);
 
             int mode = atoi(ble.get()->mode);
@@ -67,28 +65,25 @@ void screen_main(void)
                 screen.set("sensor", "n0", sensor.m_aht10->get_temres());
                 screen.set("sensor", "n1", sensor.m_aht10->get_humires());
             }
-            if (server.product_get()) {
-                screen.set("ware", "t0", server.get_product());
+            if (server.has_data()) {
+                screen.set("ware", "t0", server.get_data());
             }
 
             vTaskDelay(1);
         }
 
-        // 获取屏幕信息 (由于串口是异步的，不能及时分清楚数据是哪个，只能粗略通过比较大小判断)
+        // 解析屏幕信息
         {
-            screen.get("sensor", "n0");
-            screen.get("sensor", "bt1");
-
             char header = screen.get_data()[0];
-            char value = screen.get_data()[1];
-            if (header == 0x71) {
-                if (value > 1) {
-                    sensor.m_aht10->get_temres() = value;
-                } else {
-                    sensor.m_light = value;
-                }
+            char value = screen.get_data()[4];
+            if (header == 0x06) {
+                sensor.m_aht10->get_temres() = value;
+            } else if (header == 0x0B) {
+                sensor.m_aht10->get_humires() = value;
+            } else if (header == 0x0A) {
+                sensor.m_light = value;
             }
-            
+
             vTaskDelay(1);
         }
 

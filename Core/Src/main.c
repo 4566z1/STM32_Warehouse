@@ -19,7 +19,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "dma.h"
 #include "i2c.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -89,13 +91,15 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_I2C1_Init();
+  MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-    USART1_Init(115200);
-    USART2_Init(115200);
-    USART3_Init(115200);
-    UART4_Init(115200);
-    USART6_Init(115200);
+  USART1_Init(115200);
+  USART2_Init(115200);
+  USART3_Init(115200);
+  UART4_Init(115200);
+  USART6_Init(115200);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */

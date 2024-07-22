@@ -4,12 +4,12 @@ extern "C" {
 #include "bsp_USART.h"
 }
 
-bool BLE::decode()
+bool BLE::decode(char* data)
 {
-    if (this->m_buf[0] != ':') return false;
+    if (data[0] != ':') return false;
 
     int i = 0;
-    char* temp = strtok(m_buf, ":");
+    char* temp = strtok(data, ":");
 
     while (temp) {
         if (i == 0) strcpy(m_ble_pack.name, temp);
@@ -22,17 +22,19 @@ bool BLE::decode()
     return true;
 }
 
-void BLE::read()
+bool BLE::read()
 {
-    // Refresh
-    m_ble_pack = {{0}, {0}, {0}};
-    memset(m_buf, 0, 20);
-
-    // Read data
     uint8_t* rxdata = USART2_GetReceivedData();
-    uint16_t rxNum = USART2_GetReceivedNum();
-    memcpy(this->m_buf, rxdata, rxNum < 20 ? rxNum : 20);
-    USART2_ClearReceived();
+
+    /*    数据有效    */
+    if (rxdata[0] != '\0') {
+        m_ble_pack = {{0}, {0}, {0}};
+        bool ret = decode((char*)rxdata);
+        USART2_ClearReceived();
+        return ret;
+    }
+
+    return false;
 }
 
 void BLE::send(const char* str) { USART2_SendString(str); }

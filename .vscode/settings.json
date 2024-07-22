@@ -54,6 +54,7 @@
         "task.h": "c",
         "freertos.h": "c",
         "cmsis_os.h": "c",
-        "istream": "cpp"
+        "istream": "cpp",
+        "stdarg.h": "c"
     }
 }

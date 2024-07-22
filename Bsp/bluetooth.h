@@ -14,12 +14,12 @@ class BLE
 
     BLE_PACK* get() { return &m_ble_pack; }
     void send(const char* data);
-    void read();
-    bool decode();
+    bool read();
 
    private:
+    bool decode(char* data);
+
     BLE_PACK m_ble_pack = {{0}, {0}, {0}};
-    char m_buf[20] = {0};
 };
 
 #endif

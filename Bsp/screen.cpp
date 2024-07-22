@@ -31,6 +31,6 @@ const char* Screen::get_data()
     if (rxdata[0] != '\0') {
         memcpy(m_buf, rxdata, rxNum < 20 ? rxNum : 20);
     }
-
+    USART6_ClearReceived();
     return m_buf;
 }

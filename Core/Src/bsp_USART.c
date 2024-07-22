@@ -12,7 +12,7 @@
 ************************************************************************************************************************************/
 #include "bsp_USART.h"    // 头文件
 #include <stdarg.h>       // 用于支持不定长参数
-
+#include "usart.h"
 
 
 
@@ -113,10 +113,10 @@ void USART1_Init(uint32_t baudrate)
 
     USART1 -> CR1 |= 0x01 << 13;                              // 使能USART开始工作
 
-    printf("\r\r\r===========  STM32F407VE 外设初始报告 ===========\r");                   // 输出到串口助手
+    //printf("\r\r\r===========  STM32F407VE 外设初始报告 ===========\r");                   // 输出到串口助手
     SystemCoreClockUpdate();                                                               // 更新一下系统运行频率变量
-    printf("系统时钟频率          %d MHz\r", SystemCoreClock / 1000000);                   // 输出到串口助手
-    printf("USART1初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);   // 输出到串口助手
+    //printf("系统时钟频率          %d MHz\r", SystemCoreClock / 1000000);                   // 输出到串口助手
+    //printf("USART1初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);   // 输出到串口助手
 }
 
 /******************************************************************************
@@ -374,7 +374,7 @@ void USART2_Init(uint32_t baudrate)
     // 开启USART2
     USART2 -> CR1 |= 0x01 << 13;                           // 使能USART开始工作
 
-    printf("USART2初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
+    //printf("USART2初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
 }
 
 /******************************************************************************
@@ -581,7 +581,7 @@ void USART3_Init(uint32_t baudrate)
     USART3->SR   = ~(0x00F0);                                 // 清理中断
 
     USART3 -> CR1 |= 0x01 << 13;                              // 使能USART开始工作
-    printf("USART3初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
+    //printf("USART3初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
 }
 /******************************************************************************
  * 函  数： USART3_IRQHandler
@@ -787,7 +787,7 @@ void UART4_Init(uint32_t baudrate)
     UART4->SR   = ~(0x00F0);                                // 清理中断
 
     UART4 -> CR1 |= 0x01 << 13;                             // 使能USART开始工作
-    printf("UART4 初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
+    //printf("UART4 初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
 }
 
 /******************************************************************************
@@ -841,6 +841,7 @@ void UART4_IRQHandler(void)
         return;
     }
 
+    HAL_UART_IRQHandler(&huart4);
     return;
 }
 
@@ -920,6 +921,7 @@ uint8_t *UART4_GetReceivedData(void)
 void UART4_ClearReceived(void)
 {
     xUART4.ReceivedNum = 0 ;
+    memset(xUART4.ReceivedData, 0, UART4_RX_BUF_SIZE);
 }
 #endif // END UART4
 
@@ -1003,7 +1005,7 @@ void UART5_Init(uint32_t baudrate)
     UART5->SR   = ~(0x00F0);                               // 清理中断
 
     UART5 -> CR1 |= 0x01 << 13;                            // 使能USART开始工作
-    printf("UART5 初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
+    //printf("UART5 初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
 }
 
 /******************************************************************************
@@ -1210,7 +1212,7 @@ void USART6_Init(uint32_t baudrate)
     USART6->SR   = ~(0x00F0);                                 // 清理中断
 
     USART6 -> CR1 |= 0x01 << 13;                              // 使能USART开始工作
-    printf("USART6初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
+    //printf("USART6初始化配置      %d-None-8-1; 已完成初始化配置、收发配置\r", baudrate);
 }
 
 /******************************************************************************
