@@ -15,7 +15,7 @@ void tick()
 
     while (true) {
         if (sensor.is_ok()) {
-            // sensor.update();
+            sensor.update();
         }
         vTaskDelay(10000);
     }
@@ -31,13 +31,11 @@ void rfid_main(void)
 
     while (true) {
         if (ble.read()) {
-            // LOG("rfid_main => name: %s code: %s mode: %s\r\n", ble.get()->name, ble.get()->code, ble.get()->mode);
-
             int mode = atoi(ble.get()->mode);
             !mode ? server.product_add(ble.get()->name, ble.get()->code) : server.product_del(ble.get()->name);
         }
 
-        vTaskDelay(100);
+        vTaskDelay(50);
     }
 }
 
@@ -74,14 +72,13 @@ void screen_main(void)
 
         // 解析屏幕信息
         {
-            char header = screen.get_data()[0];
-            char value = screen.get_data()[4];
-            if (header == 0x06) {
-                sensor.m_aht10->get_temres() = value;
-            } else if (header == 0x0B) {
-                sensor.m_aht10->get_humires() = value;
-            } else if (header == 0x0A) {
-                sensor.m_light = value;
+            screen_s data = screen.get_data();
+            if (data.header == 0x06) {
+                sensor.m_aht10->get_temres() = data.value;
+            } else if (data.header == 0x0B) {
+                sensor.m_aht10->get_humires() = data.value;
+            } else if (data.header == 0x0A) {
+                sensor.m_light = data.value;
             }
 
             vTaskDelay(1);
@@ -103,6 +100,6 @@ void screen_main(void)
 
             /*    加湿器    */
         }
-        vTaskDelay(100);
+        vTaskDelay(50);
     }
 }
