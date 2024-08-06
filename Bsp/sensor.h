@@ -39,6 +39,7 @@ class Sensor
     bool m_light = false;
     bool m_fan = false;
     bool m_humi = false;
+    bool m_humi_last = false;
     bool m_human = false;
     bool m_stm32 = true;
 
